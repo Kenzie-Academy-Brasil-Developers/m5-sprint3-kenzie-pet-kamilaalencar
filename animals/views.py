@@ -1,5 +1,4 @@
 from rest_framework.views import APIView, Response, status
-from django.shortcuts import get_object_or_404
 from .models import Animal
 from .serializers import AnimalSerializer
 
@@ -18,12 +17,20 @@ class AnimalView(APIView):
 
 class AnimalViewDetails(APIView):
     def get(self, request, animal_id):
-        animal = get_object_or_404(Animal, pk=animal_id)
+        try: 
+            animal = Animal.objects.get(pk=animal_id)
+        except Animal.DoesNotExist:
+            return Response({'message':'Animal not found'}, status.HTTP_404_NOT_FOUND)
+
         serializer = AnimalSerializer(animal)
         return Response(serializer.data, status.HTTP_200_OK)
 
     def patch(self, request, animal_id):
-        animal = get_object_or_404(Animal, pk=animal_id)
+        try: 
+            animal = Animal.objects.get(pk=animal_id)
+        except Animal.DoesNotExist:
+            return Response({'message':'Animal not found'}, status.HTTP_404_NOT_FOUND)
+
         serializer = AnimalSerializer(animal, request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         try:
@@ -34,6 +41,10 @@ class AnimalViewDetails(APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
     def delete(self, request, animal_id):
-        animal = get_object_or_404(Animal, pk=animal_id)
+        try: 
+            animal = Animal.objects.get(pk=animal_id)
+        except Animal.DoesNotExist:
+            return Response({'message':'Animal not found'}, status.HTTP_404_NOT_FOUND)
+
         animal.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

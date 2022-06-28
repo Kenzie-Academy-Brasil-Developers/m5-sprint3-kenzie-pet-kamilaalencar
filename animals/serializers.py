@@ -36,12 +36,10 @@ class AnimalSerializer(serializers.Serializer):
         for key, value in validated_data.items():
             if key in no_editable_keys:
                 raise KeyError(key)
-
             if key == 'characteristics' and type(value) == list:
                 for characteristic in value:
                     characteristics_characteristic, created = Characteristic.objects.get_or_create(**characteristic)
                     instance.characteristics.add(characteristics_characteristic)
-            setattr(instance, key, value)
         instance.save()
         return instance
         
