@@ -1,4 +1,7 @@
 from django.urls import path
-from .views import AnimalView
+from . import views
 
-urlpatterns = [path('animals/', AnimalView.as_view())]
+urlpatterns = [
+    path('animals/', views.AnimalView.as_view()),
+    path('animals/<int:animal_id>/', views.AnimalViewDetails.as_view())
+    ]
